@@ -1,19 +1,34 @@
-from flask import Flask, request
-from pymongo import MongoClient
+from flask import Flask, request, jsonify
+import cloudinary
+import cloudinary.uploader
 import os
 
 app = Flask(__name__)
 
-# Mongo URI নেওয়া হবে environment থেকে
-MONGO_URI = os.environ.get("MONGO_URI", "mongodb://localhost:27017/")
-client = MongoClient(MONGO_URI)
-db = client['filebot']
-collection = db['files']
+# Cloudinary config
+cloudinary.config(
+  cloud_name=os.getenv('CLOUD_NAME'),
+  api_key=os.getenv('API_KEY'),
+  api_secret=os.getenv('API_SECRET')
+)
 
 @app.route('/')
-def home():
-    return "Filebot is running with Gunicorn!"
+def index():
+    return "Filebot with permanent cloud link is live!"
 
-if __name__ == '__main__':
-    # Local run এর জন্য
-    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    try:
+        upload_result = cloudinary.uploader.upload_large(
+            file,
+            resource_type="auto"  # supports video, image, etc
+        )
+        return jsonify({'link': upload_result['secure_url']}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
