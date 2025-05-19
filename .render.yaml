@@ -5,5 +5,9 @@ services:
     startCommand: gunicorn app:app
     buildCommand: pip install -r requirements.txt
     envVars:
-      - key: MONGO_URI
-        value: mongodb+srv://nazmulislamsharif53:<nazmulislamsharif222>@sharifbotcluster.bvf6lum.mongodb.net/?retryWrites=true&w=majority&appName=SharifbotCluster
+      - key: CLOUD_NAME
+        value: dq2ykb7hh
+      - key: API_KEY
+        value: 617275999532154
+      - key: API_SECRET
+        value: 40nV7iqLxbzdFK8mnE2PAXaOcbY
