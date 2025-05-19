@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: myfilebot
+    env: python
+    startCommand: gunicorn app:app
+    buildCommand: pip install -r requirements.txt
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://nazmulislamsharif53:<nazmulislamsharif222>@sharifbotcluster.bvf6lum.mongodb.net/?retryWrites=true&w=majority&appName=SharifbotCluster
